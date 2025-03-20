@@ -16,8 +16,7 @@ export const BookForm: React.FC<BookFormProps> = ({ book, onSubmit, onCancel }) 
     author: '',
     isRead: false,
     rating: undefined,
-    genre: '',
-    notes: ''
+    genre: '' //coming soon
   });
 
   // now we update the form when editing an existing book
