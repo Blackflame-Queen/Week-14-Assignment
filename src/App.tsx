@@ -1,19 +1,30 @@
-// here we import our styles, the book list component and the book card and book form it carries
-import { BookList } from './components/BookList';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
+import { Navigation } from './components/Navigation';
+import { Home } from './pages/Home';
+import { Books } from './pages/Books';
+import { About } from './pages/About';
+import { Book } from './types/book';
 import './App.css';
 
-// this is our main app component that wraps everything together
 function App() {
+  const [books, setBooks] = useState<Book[]>([]);
+
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>✨ -Archivum- ✨</h1>
-        <p className="app-subtitle">Your enchanted library</p>
-      </header>
-      <main className="app-main">
-        <BookList />
-      </main>
-    </div>
+    <Router>
+      <div className="app">
+        <header className="app-header">
+          <h1>✨ -Archivum- ✨</h1>
+          <p className="app-subtitle">Your enchanted digital library</p>
+          <Navigation />
+        </header>
+        <Routes>
+          <Route path="/" element={<Home books={books} setBooks={setBooks} />} />
+          <Route path="/books" element={<Books books={books} setBooks={setBooks} />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

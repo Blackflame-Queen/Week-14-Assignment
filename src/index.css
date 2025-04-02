@@ -143,9 +143,9 @@ button:focus-visible {
 
 .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: -0.5rem;
   color: #c4a7e7;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .book-card-actions {

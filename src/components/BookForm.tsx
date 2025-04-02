@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Book, BookFormData } from '../types/book';
+import { StarRating } from './StarRating';
 
 // this defines what props our form component needs
 interface BookFormProps {
@@ -16,8 +17,24 @@ export const BookForm: React.FC<BookFormProps> = ({ book, onSubmit, onCancel }) 
     author: '',
     isRead: false,
     rating: undefined,
-    genre: '' //coming soon
+    genre: '',
+    notes: ''
   });
+
+  const genres = [
+    'Fiction',
+    'Non-Fiction',
+    'Young Adult',
+    'Fantasy',
+    'Romance',
+    'Mystery',
+    'Thriller',
+    'Dystopian',
+    'Classic Literature',
+    'Horror',
+    'Sci-Fi',
+    'Historical'
+  ];
 
   // now we update the form when editing an existing book
   useEffect(() => {
@@ -25,7 +42,7 @@ export const BookForm: React.FC<BookFormProps> = ({ book, onSubmit, onCancel }) 
   }, [book]);
 
   // this handles changes to any form field
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -59,6 +76,21 @@ export const BookForm: React.FC<BookFormProps> = ({ book, onSubmit, onCancel }) 
       </div>
 
       <div className="form-group">
+        <select
+          name="genre"
+          value={formData.genre}
+          onChange={handleChange}
+          className="genre-select"
+          required
+        >
+          <option value="">Genre *</option>
+          {genres.map((genre) => (
+            <option key={genre} value={genre}>{genre}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="form-group">
         <label>
           <input
             type="checkbox"
@@ -66,23 +98,19 @@ export const BookForm: React.FC<BookFormProps> = ({ book, onSubmit, onCancel }) 
             checked={formData.isRead}
             onChange={handleChange}
           />
-          I read this book
+          I have read this book
         </label>
-        {formData.isRead && (
-          <input
-            type="number"
-            name="rating"
-            value={formData.rating || ''}
-            onChange={handleChange}
-            placeholder="Rating (1-5)"
-            min="1"
-            max="5"
-          />
-        )}
+      </div>
+
+      <div className="form-group">
+        <StarRating
+          rating={formData.rating}
+          onRatingChange={(rating) => setFormData(prev => ({ ...prev, rating }))}
+        />
       </div>
 
       <div className="form-actions">
-        <button type="submit">{book ? 'Update' : 'Add'} Book</button>
+        <button type="submit">{book ? 'Update' : 'Summon'} Book</button>
         <button type="button" onClick={onCancel}>Cancel</button>
       </div>
     </form>

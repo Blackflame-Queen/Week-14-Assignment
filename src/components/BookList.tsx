@@ -4,34 +4,24 @@ import { BookCard } from './BookCard';
 import { BookForm } from './BookForm';
 
 // here is our main book list component that manages all books
-export const BookList: React.FC = () => {
+interface BookListProps {
+  showForm?: boolean;
+}
+
+export const BookList: React.FC<BookListProps> = ({ showForm = false }) => {
   // we set up our state to keep track of books and form visibility
   const [books, setBooks] = useState<Book[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [editingBook, setEditingBook] = useState<Book | undefined>();
 
-  // this handles submitting new books and updating existing ones
+  // this handles submitting new books
   const handleSubmit = (data: BookFormData) => {
-    if (editingBook) {
-      setBooks(prev =>
-        prev.map(book => book.id === editingBook.id ? { ...editingBook, ...data } : book)
-      );
-      setEditingBook(undefined);
-    } else {
-      const newBook: Book = {
-        ...data,
-        id: Date.now().toString(),
-        dateAdded: new Date().toISOString()
-      };
-      setBooks(prev => [...prev, newBook]);
-    }
+    const newBook: Book = {
+      ...data,
+      id: Date.now().toString(),
+      dateAdded: new Date().toISOString()
+    };
+    setBooks(prev => [...prev, newBook]);
     setIsFormVisible(false);
-  };
-
-  // we handle editing a book by setting up the form
-  const handleEdit = (book: Book) => {
-    setEditingBook(book);
-    setIsFormVisible(true);
   };
 
   // this lets me remove a book from the collection
@@ -53,17 +43,15 @@ export const BookList: React.FC = () => {
     <div className="book-list">
       <div className="book-list-header">
         <h2>My Bookshelf</h2>
-        <button onClick={() => setIsFormVisible(true)}>Add New Book</button>
+        {showForm && (
+          <button onClick={() => setIsFormVisible(true)}>Add New Book</button>
+        )}
       </div>
 
-      {isFormVisible && (
+      {showForm && isFormVisible && (
         <BookForm
-          book={editingBook}
           onSubmit={handleSubmit}
-          onCancel={() => {
-            setIsFormVisible(false);
-            setEditingBook(undefined);
-          }}
+          onCancel={() => setIsFormVisible(false)}
         />
       )}
 
@@ -74,7 +62,6 @@ export const BookList: React.FC = () => {
             book={book}
             onDelete={handleDelete}
             onToggleRead={handleToggleRead}
-            onEdit={handleEdit}
           />
         ))}      
       </div>
