@@ -1,4 +1,4 @@
-# Book-Collection Management App
+# Archivum
 
 A CRUD application for managing a book collection.
 
