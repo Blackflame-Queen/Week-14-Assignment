@@ -11,7 +11,6 @@ interface BookFormProps {
 
 // here we create our form component that handles adding and editing books
 export const BookForm: React.FC<BookFormProps> = ({ book, onSubmit, onCancel }) => {
-  // next, this sets up our form's initial state
   const [formData, setFormData] = useState<BookFormData>({
     title: '',
     author: '',
@@ -20,6 +19,8 @@ export const BookForm: React.FC<BookFormProps> = ({ book, onSubmit, onCancel }) 
     genre: '',
     notes: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const genres = [
     'Fiction',
@@ -50,9 +51,31 @@ export const BookForm: React.FC<BookFormProps> = ({ book, onSubmit, onCancel }) 
     }));
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      await onSubmit(formData);
+      setFormData({
+        title: '',
+        author: '',
+        isRead: false,
+        rating: undefined,
+        genre: '',
+        notes: ''
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred while submitting the form');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // finally, we render our form with all its input fields
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSubmit(formData); }} className="book-form">
+    <form onSubmit={handleSubmit} className="book-form">
       <div className="form-group">
         <input
           type="text"
@@ -110,8 +133,13 @@ export const BookForm: React.FC<BookFormProps> = ({ book, onSubmit, onCancel }) 
       </div>
 
       <div className="form-actions">
-        <button type="submit">{book ? 'Update' : 'Summon'} Book</button>
-        <button type="button" onClick={onCancel}>Cancel</button>
+        {error && <div className="error-message">{error}</div>}
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Saving...' : (book ? 'Update' : 'Summon')}
+        </button>
+        <button type="button" onClick={onCancel} disabled={isSubmitting}>
+          Cancel
+        </button>
       </div>
     </form>
   );

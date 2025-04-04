@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BookForm } from '../components/BookForm';
 import { Book } from '../types/book';
+import { api } from '../services/api';
 
 interface HomeProps {
   books: Book[];
@@ -12,14 +13,15 @@ type BookFormData = Omit<Book, 'id' | 'dateAdded'>;
 export function Home({ setBooks }: HomeProps) {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
-  const handleSubmit = (data: BookFormData) => {
-    const newBook: Book = {
-      ...data,
-      id: Date.now().toString(),
-      dateAdded: new Date().toISOString()
-    };
-    setBooks(prev => [...prev, newBook]);
-    setIsFormVisible(false);
+  const handleSubmit = async (data: BookFormData) => {
+    try {
+      const newBook = await api.createBook(data);
+      setBooks(prev => [...prev, newBook]);
+      setIsFormVisible(false);
+    } catch (error) {
+      console.error('Error creating book:', error);
+      throw error;
+    }
   };
 
   return (

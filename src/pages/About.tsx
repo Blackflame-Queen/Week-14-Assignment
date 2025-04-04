@@ -14,7 +14,7 @@ export function About() {
             <li>Add and manage your book collection</li>
             <li>Track reading progress</li>
             <li>Simple, responsive interface</li>
-            <li>COMING SOON: persisting book data</li>
+            <li>Persisting book data</li>
           </ul>
         </div>
       </div>

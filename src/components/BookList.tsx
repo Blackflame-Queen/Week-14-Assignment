@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Book, BookFormData } from '../types/book';
 import { BookCard } from './BookCard';
 import { BookForm } from './BookForm';
+import { api } from '../services/api';
 
 // here is our main book list component that manages all books
 interface BookListProps {
@@ -9,44 +10,96 @@ interface BookListProps {
 }
 
 export const BookList: React.FC<BookListProps> = ({ showForm = false }) => {
-  // we set up our state to keep track of books and form visibility
+  // State management for books, loading, error, and form visibility
   const [books, setBooks] = useState<Book[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // this handles submitting new books
-  const handleSubmit = (data: BookFormData) => {
-    const newBook: Book = {
-      ...data,
-      id: Date.now().toString(),
-      dateAdded: new Date().toISOString()
+  // Fetch books when component mounts
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const fetchedBooks = await api.getBooks();
+        setBooks(fetchedBooks);
+        setError(null);
+      } catch (error) {
+        console.error('Error fetching books:', error);
+        setError('Failed to fetch books. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
     };
-    setBooks(prev => [...prev, newBook]);
-    setIsFormVisible(false);
+    fetchBooks();
+  }, []);
+
+  // Handle submitting new books
+  const handleSubmit = async (data: BookFormData) => {
+    try {
+      setIsLoading(true);
+      const newBook = await api.createBook(data);
+      setBooks(prev => [...prev, newBook]);
+      setError(null);
+      setIsFormVisible(false);
+    } catch (error) {
+      console.error('Error adding book:', error);
+      setError('Failed to add book. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // this lets me remove a book from the collection
-  const handleDelete = (id: string) => {
-    setBooks(prev => prev.filter(book => book.id !== id));
+  // Handle book deletion
+  const handleDelete = async (id: string) => {
+    try {
+      setIsLoading(true);
+      await api.deleteBook(id);
+      setBooks(prev => prev.filter(book => book.id !== id));
+      setError(null);
+    } catch (error) {
+      console.error('Error deleting book:', error);
+      setError('Failed to delete book. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // here we toggle whether a book has been read or not
-  const handleToggleRead = (id: string) => {
-    setBooks(prev =>
-      prev.map(book =>
-        book.id === id ? { ...book, isRead: !book.isRead } : book
-      )
-    );
+  // Handle toggling book read status
+  const handleToggleRead = async (id: string) => {
+    try {
+      const book = books.find(b => b.id === id);
+      if (!book) return;
+      
+      setIsLoading(true);
+      const updatedBook = await api.updateBook(id, { isRead: !book.isRead });
+      setBooks(prev =>
+        prev.map(b => b.id === id ? updatedBook : b)
+      );
+      setError(null);
+    } catch (error) {
+      console.error('Error updating book:', error);
+      setError('Failed to update book status. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // finally we render our book list with all its features
   return (
     <div className="book-list">
       <div className="book-list-header">
         <h2>My Bookshelf</h2>
         {showForm && (
-          <button onClick={() => setIsFormVisible(true)}>Add New Book</button>
+          <button 
+            onClick={() => setIsFormVisible(true)} 
+            disabled={isLoading}
+          >
+            Add New Book
+          </button>
         )}
       </div>
+      
+      {error && <div className="error-message">{error}</div>}
+      {isLoading && <div className="loading-spinner">Loading...</div>}
 
       {showForm && isFormVisible && (
         <BookForm
