@@ -1,4 +1,4 @@
-# Book-Collection Management App
+# Archivum
 
 A CRUD application for managing a book collection.
 
@@ -8,7 +8,7 @@ A CRUD application for managing a book collection.
 - Delete books
 - Mark books as read
 - Rate books you've read
-- Add notes and genre information
+- Add genre information
 
 ## To Start:
 
