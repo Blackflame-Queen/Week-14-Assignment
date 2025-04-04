@@ -1,6 +1,8 @@
+// here we import our dependencies and styles
 import React, { useState, useEffect } from 'react';
 import './BookQuotes.css';
 
+// here is a collection of literary quotes to enhance the experience
 const quotes = [
   {
     text: "A reader lives a thousand lives before he dies. The man who never reads lives only one.",
@@ -24,6 +26,7 @@ const quotes = [
   }
 ];
 
+// this creates our quotes component that displays rotating book quotes
 export const BookQuotes: React.FC = () => {
   const [currentQuote, setCurrentQuote] = useState(quotes[0]);
 
@@ -31,11 +34,12 @@ export const BookQuotes: React.FC = () => {
     const interval = setInterval(() => {
       const randomIndex = Math.floor(Math.random() * quotes.length);
       setCurrentQuote(quotes[randomIndex]);
-    }, 10000); // Change quote every 10 seconds
+    }, 10000); 
 
     return () => clearInterval(interval);
   }, []);
 
+  // render our quote with author attribution
   return (
     <div className="book-quotes">
       <blockquote>

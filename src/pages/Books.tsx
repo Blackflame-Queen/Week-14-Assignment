@@ -6,11 +6,13 @@ import { SortingControls } from '../components/SortingControls';
 import { BookStats } from '../components/BookStats';
 import { ReadingProgress } from '../components/ReadingProgress';
 
+// this says what props our books page needs
 interface BooksProps {
   books: Book[];
   setBooks: React.Dispatch<React.SetStateAction<Book[]>>;
 }
 
+// now we create our books page component that manages the book collection
 export function Books({ books, setBooks }: BooksProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'title' | 'author' | 'rating'>('title');
@@ -37,6 +39,7 @@ export function Books({ books, setBooks }: BooksProps) {
     return a[sortBy].localeCompare(b[sortBy]);
   });
 
+  // render our books page with all its components
   return (
     <div className="books-page">
       <div className="books-content">

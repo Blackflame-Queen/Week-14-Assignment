@@ -1,6 +1,9 @@
+// here we import our routing components
 import { NavLink } from 'react-router-dom';
 
+// this is our navigation component that handles site routing
 export function Navigation() {
+  // here we render our navigation links with active states
   return (
     <nav className="main-nav">
       <ul className="nav-list">

@@ -1,7 +1,9 @@
 import React from 'react';
 
+// defines the sorting options for the book list
 export type SortOption = 'title' | 'author' | 'rating';
 
+// component props for handling sort operations
 interface SortingControlsProps {
   onSort: (sortBy: SortOption) => void;
   currentSort: SortOption;

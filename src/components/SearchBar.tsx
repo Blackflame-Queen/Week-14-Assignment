@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
+// component props for the search functionality
 interface SearchBarProps {
   onSearch: (query: string) => void;
   placeholder?: string;
 }
 
+// search component with debounced input handling
 export const SearchBar: React.FC<SearchBarProps> = ({ 
   onSearch, 
   placeholder = 'Search books...'

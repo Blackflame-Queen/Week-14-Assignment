@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 
+// component props interface for handling star rating interactions
 interface StarRatingProps {
   rating: number | undefined;
   onRatingChange: (rating: number) => void;
 }
 
+// interactive star rating component that displays and handles rating changes
 export const StarRating: React.FC<StarRatingProps> = ({ rating, onRatingChange }) => {
   const [hoverRating, setHoverRating] = useState<number | null>(null);
 

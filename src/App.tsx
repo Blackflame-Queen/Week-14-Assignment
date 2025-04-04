@@ -9,6 +9,7 @@ import { Book } from './types/book';
 import { api } from './services/api';
 import './App.css';
 
+// here we create our main app component that manages routing and state
 function App() {
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,6 +32,7 @@ function App() {
     fetchBooks();
   }, []);
 
+  // render our app with routing and shared state
   return (
     <Router>
       <div className="app">
