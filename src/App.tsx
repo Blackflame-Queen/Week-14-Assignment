@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import { Navigation } from './components/Navigation';
+import { BookQuotes } from './components/BookQuotes';
 import { Home } from './pages/Home';
 import { Books } from './pages/Books';
 import { About } from './pages/About';
@@ -16,6 +17,7 @@ function App() {
         <header className="app-header">
           <h1>✨ -Archivum- ✨</h1>
           <p className="app-subtitle">Your enchanted digital library</p>
+          <BookQuotes />
           <Navigation />
         </header>
         <Routes>
